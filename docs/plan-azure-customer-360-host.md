@@ -17,7 +17,7 @@ host implements that API with much smaller parts.
 | Read notes in a vault | yes (customers, cost notes) | yes | yes | file reader over a vault folder |
 | Write notes in a vault | yes (its own notes) | yes | yes | writer that keeps the note format, versions and IDs |
 | Search notes | probably | yes | no | scan over frontmatter, no index (a limit, see below) |
-| Scheduled refresh | yes, nightly `0 2 * * *` in the install's time zone | maybe | yes | a small cron runner in the host |
+| Scheduled refresh | yes, nightly `0 2 * * *` in the install's time zone | maybe | yes | **not in the base host** (decision 2026-11-18): the refresh is started from outside, by the operator's own scheduler |
 | Agent calls | only if it asks an agent | maybe | no | prompt-only agent calls, no tools, no memory |
 | Other plugins' data | reads Entities' customers and cost consumption | provides | provides | the host loads all three together |
 | Sign-in and people | single operator at first | same | same | none (single operator) |
@@ -40,8 +40,9 @@ Items marked "confirm" must be checked against each plugin's manifest and code b
    BUG-104 lesson, so the host must refuse a search above a size limit and say why.
 4. **Agent adapter.** A prompt in, text out, through a configured model endpoint. No tools, no memory,
    no delegation. A plugin call that needs tools fails with a clear message.
-5. **Scheduler.** A cron runner with the install's time zone. Each job runs once per slot, and a job
-   never overlaps itself (the BUG-105 lesson).
+5. **No scheduler in the base host (decision 2026-11-18).** The host does not run jobs on a timer. The nightly
+   refresh is started by the operator's own scheduler (Windows Task Scheduler or cron) running a command the
+   host provides. The host never overlaps a refresh with itself: a second start while one runs is refused.
 6. **Plugin loader.** Reads each plugin's `plugin.json`, checks the framework API version it declares,
    and refuses a plugin whose required API calls the host does not provide, naming them.
 
@@ -51,7 +52,7 @@ Items marked "confirm" must be checked against each plugin's manifest and code b
   rows above. Decide whether Entities and azure-cost-manager ship in the product.
 - **Phase 1, read only (1 week).** Vault reader, search scan, plugin loader. Azure Customer 360 runs and
   shows its screens against a copy of the operator's vault. No writes.
-- **Phase 2, writes and schedule (1 week).** Vault writer with the hash check, the nightly scheduler, the
+- **Phase 2, writes and refresh (1 week).** Vault writer with the hash check, the refresh command (no scheduler in the host), the
   refresh job. Run the refresh twice on the copy and compare the notes byte for byte.
 - **Phase 3, agents and cross-plugin reads (1 week, if needed).** Prompt-only agent adapter, and Entities
   and azure-cost-manager loaded together.
