@@ -86,7 +86,17 @@ def main(argv: list[str] | None = None) -> int:
     refresh.add_argument("--plugins", nargs="+", required=True, type=Path)
     refresh.add_argument("--vault", required=True, type=Path)
     refresh.add_argument("--data", required=True, type=Path)
+    serve_command = commands.add_parser("serve", help="run the plugins' screens on 127.0.0.1")
+    serve_command.add_argument("--plugins", nargs="+", required=True, type=Path)
+    serve_command.add_argument("--vault", required=True, type=Path)
+    serve_command.add_argument("--data", required=True, type=Path)
+    serve_command.add_argument("--port", type=int, default=8000)
     args = parser.parse_args(argv)
+    if args.command == "serve":
+        from .serve import serve
+
+        serve(args.plugins, args.vault, args.data, args.port)
+        return 0
     try:
         result = run_refresh(args.plugin, args.plugins, args.vault, args.data)
     except AlreadyRunning as held:
