@@ -22,3 +22,5 @@ Not done in Phase 1:
 - The screens were checked for "no 500", not for correct content.
 
 Run: `PLUGINS_ROOT=<folder with the plugin repos> python -m pytest tests`
+
+Phase 2 (started): the refresh command (python -m sbhost refresh) is written and tested with a fake plugin (tests/test_refresh_command.py, 6 tests). Not yet run against the real Azure refresh: that needs Azure sign-in, and the real route may refuse a call from outside the platform's admin check.
