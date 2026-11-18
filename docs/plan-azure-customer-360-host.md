@@ -52,7 +52,7 @@ Items marked "confirm" must be checked against each plugin's manifest and code b
   rows above. Decide whether Entities and azure-cost-manager ship in the product.
 - **Phase 1, read only (1 week).** Vault reader, search scan, plugin loader. Azure Customer 360 runs and
   shows its screens against a copy of the operator's vault. No writes.
-- **Phase 2, writes and refresh (1 week).** Vault writer with the hash check, the refresh command (no scheduler in the host), the
+- **Phase 2, writes and refresh (1 week).** Vault writer: DROPPED (decision 2026-11-18, the host is read-only). The refresh command (no scheduler in the host), the
   refresh job. Run the refresh twice on the copy and compare the notes byte for byte.
 - **Phase 3, agents and cross-plugin reads (1 week, if needed).** Prompt-only agent adapter, and Entities
   and azure-cost-manager loaded together.

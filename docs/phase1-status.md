@@ -24,3 +24,5 @@ Not done in Phase 1:
 Run: `PLUGINS_ROOT=<folder with the plugin repos> python -m pytest tests`
 
 Phase 2 (started): the refresh command (python -m sbhost refresh) is written and tested with a fake plugin (tests/test_refresh_command.py, 6 tests). Not yet run against the real Azure refresh: that needs Azure sign-in, and the real route may refuse a call from outside the platform's admin check.
+
+Decision 2026-11-18: no vault writer. Phase 2's writer is dropped; the host is read-only. Entities' note-writing skill scripts (fan_out_lib, create_companies_partners, link_opportunity) cannot run in this host. See docs/decisions.md.
